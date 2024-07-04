@@ -82,37 +82,37 @@ describe('UniswapV3Pool gas tests', () => {
       })
 
       describe('#swapExact0For1', () => {
-        xit('first swap in block with no tick movement', async () => {
+        it('first swap in block with no tick movement', async () => {
           await snapshotGasCost(swapExact0For1(2000, wallet.address))
           expect((await pool.slot0()).sqrtPriceX96).to.not.eq(startingPrice)
           expect((await pool.slot0()).tick).to.eq(startingTick)
         })
 
-        xit('first swap in block moves tick, no initialized crossings', async () => {
+        it('first swap in block moves tick, no initialized crossings', async () => {
           await snapshotGasCost(swapExact0For1(expandTo18Decimals(1).div(10000), wallet.address))
           expect((await pool.slot0()).tick).to.eq(startingTick - 1)
         })
 
-        xit('second swap in block with no tick movement', async () => {
+        it('second swap in block with no tick movement', async () => {
           await swapExact0For1(expandTo18Decimals(1).div(10000), wallet.address)
           expect((await pool.slot0()).tick).to.eq(startingTick - 1)
           await snapshotGasCost(swapExact0For1(2000, wallet.address))
           expect((await pool.slot0()).tick).to.eq(startingTick - 1)
         })
 
-        xit('second swap in block moves tick, no initialized crossings', async () => {
+        it('second swap in block moves tick, no initialized crossings', async () => {
           await swapExact0For1(1000, wallet.address)
           expect((await pool.slot0()).tick).to.eq(startingTick)
           await snapshotGasCost(swapExact0For1(expandTo18Decimals(1).div(10000), wallet.address))
           expect((await pool.slot0()).tick).to.eq(startingTick - 1)
         })
 
-        xit('first swap in block, large swap, no initialized crossings', async () => {
+        it('first swap in block, large swap, no initialized crossings', async () => {
           await snapshotGasCost(swapExact0For1(expandTo18Decimals(10), wallet.address))
           expect((await pool.slot0()).tick).to.eq(-35787)
         })
 
-        xit('first swap in block, large swap crossing several initialized ticks', async () => {
+        it('first swap in block, large swap crossing several initialized ticks', async () => {
           await mint(wallet.address, startingTick - 3 * tickSpacing, startingTick - tickSpacing, expandTo18Decimals(1))
           await mint(
             wallet.address,
@@ -125,13 +125,13 @@ describe('UniswapV3Pool gas tests', () => {
           expect((await pool.slot0()).tick).to.be.lt(startingTick - 4 * tickSpacing) // we crossed the last tick
         })
 
-        xit('first swap in block, large swap crossing a single initialized tick', async () => {
+        it('first swap in block, large swap crossing a single initialized tick', async () => {
           await mint(wallet.address, minTick, startingTick - 2 * tickSpacing, expandTo18Decimals(1))
           await snapshotGasCost(swapExact0For1(expandTo18Decimals(1), wallet.address))
           expect((await pool.slot0()).tick).to.be.lt(startingTick - 2 * tickSpacing) // we crossed the last tick
         })
 
-        xit('second swap in block, large swap crossing several initialized ticks', async () => {
+        it('second swap in block, large swap crossing several initialized ticks', async () => {
           await mint(wallet.address, startingTick - 3 * tickSpacing, startingTick - tickSpacing, expandTo18Decimals(1))
           await mint(
             wallet.address,
@@ -144,7 +144,7 @@ describe('UniswapV3Pool gas tests', () => {
           expect((await pool.slot0()).tick).to.be.lt(startingTick - 4 * tickSpacing)
         })
 
-        xit('second swap in block, large swap crossing a single initialized tick', async () => {
+        it('second swap in block, large swap crossing a single initialized tick', async () => {
           await mint(wallet.address, minTick, startingTick - 2 * tickSpacing, expandTo18Decimals(1))
           await swapExact0For1(expandTo18Decimals(1).div(10000), wallet.address)
           expect((await pool.slot0()).tick).to.be.gt(startingTick - 2 * tickSpacing) // we didn't cross the initialized tick
@@ -152,7 +152,7 @@ describe('UniswapV3Pool gas tests', () => {
           expect((await pool.slot0()).tick).to.be.lt(startingTick - 2 * tickSpacing) // we crossed the last tick
         })
 
-        xit('large swap crossing several initialized ticks after some time passes', async () => {
+        it('large swap crossing several initialized ticks after some time passes', async () => {
           await mint(wallet.address, startingTick - 3 * tickSpacing, startingTick - tickSpacing, expandTo18Decimals(1))
           await mint(
             wallet.address,
@@ -166,7 +166,7 @@ describe('UniswapV3Pool gas tests', () => {
           expect((await pool.slot0()).tick).to.be.lt(startingTick - 4 * tickSpacing)
         })
 
-        xit('large swap crossing several initialized ticks second time after some time passes', async () => {
+        it('large swap crossing several initialized ticks second time after some time passes', async () => {
           await mint(wallet.address, startingTick - 3 * tickSpacing, startingTick - tickSpacing, expandTo18Decimals(1))
           await mint(
             wallet.address,
@@ -201,18 +201,18 @@ describe('UniswapV3Pool gas tests', () => {
           },
         ]) {
           describe(description, () => {
-            xit('new position mint first in range', async () => {
+            it('new position mint first in range', async () => {
               await snapshotGasCost(mint(wallet.address, tickLower, tickUpper, expandTo18Decimals(1)))
             })
-            xit('add to position existing', async () => {
+            it('add to position existing', async () => {
               await mint(wallet.address, tickLower, tickUpper, expandTo18Decimals(1))
               await snapshotGasCost(mint(wallet.address, tickLower, tickUpper, expandTo18Decimals(1)))
             })
-            xit('second position in same range', async () => {
+            it('second position in same range', async () => {
               await mint(wallet.address, tickLower, tickUpper, expandTo18Decimals(1))
               await snapshotGasCost(mint(other.address, tickLower, tickUpper, expandTo18Decimals(1)))
             })
-            xit('add to position after some time passes', async () => {
+            it('add to position after some time passes', async () => {
               await mint(wallet.address, tickLower, tickUpper, expandTo18Decimals(1))
               await pool.advanceTime(1)
               await snapshotGasCost(mint(wallet.address, tickLower, tickUpper, expandTo18Decimals(1)))
@@ -245,17 +245,17 @@ describe('UniswapV3Pool gas tests', () => {
               await mint(wallet.address, tickLower, tickUpper, liquidityAmount)
             })
 
-            xit('burn when only position using ticks', async () => {
+            it('burn when only position using ticks', async () => {
               await snapshotGasCost(pool.burn(tickLower, tickUpper, expandTo18Decimals(1)))
             })
-            xit('partial position burn', async () => {
+            it('partial position burn', async () => {
               await snapshotGasCost(pool.burn(tickLower, tickUpper, expandTo18Decimals(1).div(2)))
             })
-            xit('entire position burn but other positions are using the ticks', async () => {
+            it('entire position burn but other positions are using the ticks', async () => {
               await mint(other.address, tickLower, tickUpper, expandTo18Decimals(1))
               await snapshotGasCost(pool.burn(tickLower, tickUpper, expandTo18Decimals(1)))
             })
-            xit('burn entire position after some time passes', async () => {
+            it('burn entire position after some time passes', async () => {
               await pool.advanceTime(1)
               await snapshotGasCost(pool.burn(tickLower, tickUpper, expandTo18Decimals(1)))
             })
@@ -267,7 +267,7 @@ describe('UniswapV3Pool gas tests', () => {
         const tickLower = startingTick - tickSpacing
         const tickUpper = startingTick + tickSpacing
 
-        xit('best case', async () => {
+        it('best case', async () => {
           await mint(wallet.address, tickLower, tickUpper, expandTo18Decimals(1))
           await swapExact0For1(expandTo18Decimals(1).div(100), wallet.address)
           await pool.burn(tickLower, tickUpper, 0)

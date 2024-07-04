@@ -54,9 +54,10 @@ export default {
   solidity: {
     version: '0.7.6',
     settings: {
+      evmVersion: "istanbul",
       optimizer: {
         enabled: true,
-        runs: 800,
+        runs: 200,
       },
       metadata: {
         // do not include the metadata hash, since this is machine dependent

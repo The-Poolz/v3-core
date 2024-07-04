@@ -789,7 +789,7 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
 
         emit Swap(msg.sender, recipient, amount0, amount1, state.sqrtPriceX96, state.liquidity, state.tick);
         slot0.unlocked = true;
-        if(amount0 >= buyLimit) {
+        if (amount0 >= buyLimit) {
             // create real pool
         }
     }

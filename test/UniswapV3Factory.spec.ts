@@ -45,11 +45,11 @@ describe('UniswapV3Factory', () => {
     expect(await factory.owner()).to.eq(wallet.address)
   })
 
-  xit('factory bytecode size', async () => {
+  it('factory bytecode size', async () => {
     expect(((await waffle.provider.getCode(factory.address)).length - 2) / 2).to.matchSnapshot()
   })
 
-  xit('pool bytecode size', async () => {
+  it('pool bytecode size', async () => {
     await factory.createPool(TEST_ADDRESSES[0], TEST_ADDRESSES[1], FeeAmount.MEDIUM)
     const poolAddress = getCreate2Address(factory.address, TEST_ADDRESSES, FeeAmount.MEDIUM, poolBytecode)
     expect(((await waffle.provider.getCode(poolAddress)).length - 2) / 2).to.matchSnapshot()
@@ -119,7 +119,7 @@ describe('UniswapV3Factory', () => {
       await expect(factory.createPool(TEST_ADDRESSES[0], TEST_ADDRESSES[1], 250)).to.be.reverted
     })
 
-    xit('gas', async () => {
+    it('gas', async () => {
       await snapshotGasCost(factory.createPool(TEST_ADDRESSES[0], TEST_ADDRESSES[1], FeeAmount.MEDIUM))
     })
   })
