@@ -3,7 +3,7 @@ import { ethers, waffle } from 'hardhat'
 import { UniswapV3Factory } from '../typechain/UniswapV3Factory'
 import { expect } from './shared/expect'
 import snapshotGasCost from './shared/snapshotGasCost'
-import { BUY_LIMIT } from './shared/fixtures';
+import { BUY_LIMIT } from './shared/fixtures'
 
 import { FeeAmount, getCreate2Address, TICK_SPACINGS } from './shared/utilities'
 
