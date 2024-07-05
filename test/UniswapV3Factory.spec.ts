@@ -3,7 +3,6 @@ import { ethers, waffle } from 'hardhat'
 import { UniswapV3Factory } from '../typechain/UniswapV3Factory'
 import { expect } from './shared/expect'
 import snapshotGasCost from './shared/snapshotGasCost'
-import { BUY_LIMIT } from './shared/fixtures';
 
 import { FeeAmount, getCreate2Address, TICK_SPACINGS } from './shared/utilities'
 
@@ -23,7 +22,7 @@ describe('UniswapV3Factory', () => {
   let poolBytecode: string
   const fixture = async () => {
     const factoryFactory = await ethers.getContractFactory('UniswapV3Factory')
-    return (await factoryFactory.deploy(BUY_LIMIT)) as UniswapV3Factory
+    return (await factoryFactory.deploy()) as UniswapV3Factory
   }
 
   let loadFixture: ReturnType<typeof createFixtureLoader>

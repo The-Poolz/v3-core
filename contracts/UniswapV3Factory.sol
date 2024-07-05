@@ -19,7 +19,7 @@ contract UniswapV3Factory is IUniswapV3Factory, UniswapV3PoolDeployer, NoDelegat
     /// @inheritdoc IUniswapV3Factory
     mapping(address => mapping(address => mapping(uint24 => address))) public override getPool;
 
-    constructor(int256 _buyLimit) {
+    constructor() {
         owner = msg.sender;
         emit OwnerChanged(address(0), msg.sender);
 
@@ -29,8 +29,6 @@ contract UniswapV3Factory is IUniswapV3Factory, UniswapV3PoolDeployer, NoDelegat
         emit FeeAmountEnabled(3000, 60);
         feeAmountTickSpacing[10000] = 200;
         emit FeeAmountEnabled(10000, 200);
-
-        buyLimit = _buyLimit;
     }
 
     /// @inheritdoc IUniswapV3Factory

@@ -26,6 +26,7 @@ import './interfaces/IERC20Minimal.sol';
 import './interfaces/callback/IUniswapV3MintCallback.sol';
 import './interfaces/callback/IUniswapV3SwapCallback.sol';
 import './interfaces/callback/IUniswapV3FlashCallback.sol';
+import "./interfaces/IBNBParty.sol";
 
 contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
     using LowGasSafeMath for uint256;
@@ -53,8 +54,7 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
     /// @inheritdoc IUniswapV3PoolImmutables
     uint128 public immutable override maxLiquidityPerTick;
 
-    /// after this limit is reached, the liquidity pool will create real pool
-    int256 public immutable buyLimit;
+    IBNBParty public party;
 
     struct Slot0 {
         // the current price
@@ -117,13 +117,16 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
         _;
     }
 
-    constructor(int256 _buyLimit) {
+    function setBNBParty(IBNBParty _party) external onlyFactoryOwner {
+        party = _party;
+    }
+
+    constructor() {
         int24 _tickSpacing;
         (factory, token0, token1, fee, _tickSpacing) = IUniswapV3PoolDeployer(msg.sender).parameters();
         tickSpacing = _tickSpacing;
 
         maxLiquidityPerTick = Tick.tickSpacingToMaxLiquidityPerTick(_tickSpacing);
-        buyLimit = _buyLimit;
     }
 
     /// @dev Common checks for valid tick inputs.
@@ -789,9 +792,7 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
 
         emit Swap(msg.sender, recipient, amount0, amount1, state.sqrtPriceX96, state.liquidity, state.tick);
         slot0.unlocked = true;
-        if (amount0 >= buyLimit) {
-            // create real pool
-        }
+        if (address(party) != address(0)) party.handleSwap();
     }
 
     /// @inheritdoc IUniswapV3PoolActions
