@@ -1,6 +1,7 @@
 import { Wallet } from 'ethers'
 import { ethers, waffle } from 'hardhat'
 import { UniswapV3Factory } from '../typechain/UniswapV3Factory'
+import { MockBNBParty } from '../typechain/MockBNBParty'
 import { expect } from './shared/expect'
 import snapshotGasCost from './shared/snapshotGasCost'
 
@@ -21,8 +22,10 @@ describe('UniswapV3Factory', () => {
   let factory: UniswapV3Factory
   let poolBytecode: string
   const fixture = async () => {
+    const MockBNBParty = await ethers.getContractFactory('MockBNBParty')
+    const mockBNBParty = (await MockBNBParty.deploy()) as MockBNBParty
     const factoryFactory = await ethers.getContractFactory('UniswapV3Factory')
-    return (await factoryFactory.deploy()) as UniswapV3Factory
+    return (await factoryFactory.deploy(mockBNBParty.address)) as UniswapV3Factory
   }
 
   let loadFixture: ReturnType<typeof createFixtureLoader>
@@ -38,6 +41,11 @@ describe('UniswapV3Factory', () => {
 
   beforeEach('deploy factory', async () => {
     factory = await loadFixture(fixture)
+  })
+
+  it('IBNBParty is zero address', async () => {
+    const factoryFactory = await ethers.getContractFactory('UniswapV3Factory')
+    await expect(factoryFactory.deploy(constants.AddressZero)).to.be.reverted
   })
 
   it('owner is deployer', async () => {
