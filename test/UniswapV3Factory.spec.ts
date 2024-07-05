@@ -42,7 +42,7 @@ describe('UniswapV3Factory', () => {
   beforeEach('deploy factory', async () => {
     factory = await loadFixture(fixture)
   })
-  
+
   it('IBNBParty is zero address', async () => {
     const factoryFactory = await ethers.getContractFactory('UniswapV3Factory')
     await expect(factoryFactory.deploy(constants.AddressZero)).to.be.reverted
