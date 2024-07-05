@@ -18,7 +18,7 @@ contract UniswapV3Factory is IUniswapV3Factory, UniswapV3PoolDeployer, NoDelegat
     mapping(uint24 => int24) public override feeAmountTickSpacing;
     /// @inheritdoc IUniswapV3Factory
     mapping(address => mapping(address => mapping(uint24 => address))) public override getPool;
-    
+
     IBNBParty public override party;
 
     constructor(IBNBParty _party) {
@@ -31,7 +31,7 @@ contract UniswapV3Factory is IUniswapV3Factory, UniswapV3PoolDeployer, NoDelegat
         emit FeeAmountEnabled(3000, 60);
         feeAmountTickSpacing[10000] = 200;
         emit FeeAmountEnabled(10000, 200);
-        
+
         party = _party;
     }
 
