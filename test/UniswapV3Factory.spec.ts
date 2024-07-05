@@ -1,6 +1,7 @@
 import { Wallet } from 'ethers'
 import { ethers, waffle } from 'hardhat'
 import { UniswapV3Factory } from '../typechain/UniswapV3Factory'
+import { MockBNBParty } from '../typechain/MockBNBParty'
 import { expect } from './shared/expect'
 import snapshotGasCost from './shared/snapshotGasCost'
 
@@ -21,8 +22,10 @@ describe('UniswapV3Factory', () => {
   let factory: UniswapV3Factory
   let poolBytecode: string
   const fixture = async () => {
+    const MockBNBParty = await ethers.getContractFactory('MockBNBParty')
+    const mockBNBParty = (await MockBNBParty.deploy()) as MockBNBParty
     const factoryFactory = await ethers.getContractFactory('UniswapV3Factory')
-    return (await factoryFactory.deploy()) as UniswapV3Factory
+    return (await factoryFactory.deploy(mockBNBParty.address)) as UniswapV3Factory
   }
 
   let loadFixture: ReturnType<typeof createFixtureLoader>
@@ -87,18 +90,18 @@ describe('UniswapV3Factory', () => {
   }
 
   describe('#createPool', () => {
-    xit('succeeds for low fee pool', async () => {
+    it('succeeds for low fee pool', async () => {
       await createAndCheckPool(TEST_ADDRESSES, FeeAmount.LOW)
     })
 
-    xit('succeeds for medium fee pool', async () => {
+    it('succeeds for medium fee pool', async () => {
       await createAndCheckPool(TEST_ADDRESSES, FeeAmount.MEDIUM)
     })
-    xit('succeeds for high fee pool', async () => {
+    it('succeeds for high fee pool', async () => {
       await createAndCheckPool(TEST_ADDRESSES, FeeAmount.HIGH)
     })
 
-    xit('succeeds if tokens are passed in reverse', async () => {
+    it('succeeds if tokens are passed in reverse', async () => {
       await createAndCheckPool([TEST_ADDRESSES[1], TEST_ADDRESSES[0]], FeeAmount.MEDIUM)
     })
 
@@ -169,7 +172,7 @@ describe('UniswapV3Factory', () => {
     it('emits an event', async () => {
       await expect(factory.enableFeeAmount(100, 5)).to.emit(factory, 'FeeAmountEnabled').withArgs(100, 5)
     })
-    xit('enables pool creation', async () => {
+    it('enables pool creation', async () => {
       await factory.enableFeeAmount(250, 15)
       await createAndCheckPool([TEST_ADDRESSES[0], TEST_ADDRESSES[1]], 250, 15)
     })

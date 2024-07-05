@@ -5,6 +5,7 @@ import { TestERC20 } from '../../typechain/TestERC20'
 import { UniswapV3Factory } from '../../typechain/UniswapV3Factory'
 import { TestUniswapV3Callee } from '../../typechain/TestUniswapV3Callee'
 import { TestUniswapV3Router } from '../../typechain/TestUniswapV3Router'
+import { MockBNBParty } from '../../typechain/MockBNBParty'
 import { MockTimeUniswapV3PoolDeployer } from '../../typechain/MockTimeUniswapV3PoolDeployer'
 
 import { Fixture } from 'ethereum-waffle'
@@ -14,8 +15,10 @@ interface FactoryFixture {
 }
 
 async function factoryFixture(): Promise<FactoryFixture> {
+  const MockBNBParty = await ethers.getContractFactory('MockBNBParty')
+  const mockBNBParty = (await MockBNBParty.deploy()) as MockBNBParty
   const factoryFactory = await ethers.getContractFactory('UniswapV3Factory')
-  const factory = (await factoryFactory.deploy()) as UniswapV3Factory
+  const factory = (await factoryFactory.deploy(mockBNBParty.address)) as UniswapV3Factory
   return { factory }
 }
 

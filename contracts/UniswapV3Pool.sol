@@ -54,8 +54,6 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
     /// @inheritdoc IUniswapV3PoolImmutables
     uint128 public immutable override maxLiquidityPerTick;
 
-    IBNBParty public party;
-
     struct Slot0 {
         // the current price
         uint160 sqrtPriceX96;
@@ -115,10 +113,6 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
     modifier onlyFactoryOwner() {
         require(msg.sender == IUniswapV3Factory(factory).owner());
         _;
-    }
-
-    function setBNBParty(IBNBParty _party) external onlyFactoryOwner {
-        party = _party;
     }
 
     constructor() {
@@ -792,7 +786,7 @@ contract UniswapV3Pool is IUniswapV3Pool, NoDelegateCall {
 
         emit Swap(msg.sender, recipient, amount0, amount1, state.sqrtPriceX96, state.liquidity, state.tick);
         slot0.unlocked = true;
-        if (address(party) != address(0)) party.handleSwap();
+        IUniswapV3Factory(factory).party().handleSwap();
     }
 
     /// @inheritdoc IUniswapV3PoolActions
