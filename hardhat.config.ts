@@ -6,8 +6,7 @@ import '@nomiclabs/hardhat-etherscan'
 export default {
   networks: {
     hardhat: {
-      allowUnlimitedContractSize: true,
-      blockGasLimit: 130_000_000,
+      allowUnlimitedContractSize: false
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
